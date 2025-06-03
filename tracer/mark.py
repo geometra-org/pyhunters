@@ -1,12 +1,14 @@
-from dataclasses import dataclass
 from pathlib import Path
 
+from pydantic import BaseModel, model_validator
 
-@dataclass
-class Mark:
+
+class Mark(BaseModel):
     """A trackable, traceable object for comparison over time in storage."""
 
     name: str
+    # `project` will likely be a partition key
+    project: str = "DEFAULT"  # eventually replace with something from pyproject.toml
     module_path: Path
     method_name: str
     line_no: int
@@ -14,9 +16,9 @@ class Mark:
     kwargs: dict
     returns: object | None = None
     error: type[Exception] | None = None
-    project: str = "DEFAULT"  # eventually replace with something from pyproject.toml
 
-    def __post_init__(self):
+    @model_validator(mode="after")
+    def check_returns_and_error(self):
         """Ensure wonky initialization is caught."""
         if self.returns and self.error:
             raise ValueError("A `Mark` object cannot have both returns and an error.")

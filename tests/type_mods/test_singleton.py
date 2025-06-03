@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from hunter.type_mods import singleton as module
+from tracer.type_mods import singleton as module
 
 
 @dataclass

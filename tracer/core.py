@@ -1,6 +1,6 @@
 import atexit
 import inspect
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Self
 
@@ -15,10 +15,10 @@ class Tracer(metaclass=Singleton):
     """Class for adding and managing marks."""
 
     name: str
-    _marks: list[Mark] = field(default_factory=list)
 
     def __post_init__(self):
         """Ensure that the exit handler is registered."""
+        self._marks: list[Mark] = []
         self._register_exit()
 
     def __iter__(self):
@@ -45,6 +45,8 @@ class Tracer(metaclass=Singleton):
         return {mark.name: mark for mark in self._marks}
 
     def add(self, mark: Mark) -> Self:
+        if not isinstance(mark, Mark):
+            raise TypeError(f"Expected Mark, got {type(mark)}.")
         self._marks += [mark]
         return self
 
@@ -58,7 +60,7 @@ def getTracer(name: str = __name__) -> Tracer:
     return Tracer(name=name)
 
 
-def mark(name: str | None = None, *, project: str = "DEFAULT"):
+def mark(name: str, *, project: str = "DEFAULT"):
     """Simple interface for adding a marker."""
     tracer = Tracer(project)
     caller = inspect.stack()[1]
@@ -69,7 +71,7 @@ def mark(name: str | None = None, *, project: str = "DEFAULT"):
     def inner(func):
         method_name = func.__name__
         mark_kwargs["method_name"] = method_name
-        mark_kwargs["name"] = name or method_name
+        mark_kwargs["name"] = name
 
         def wrapper(*args, **kwargs):
             """Inner actions within the method."""
