@@ -85,7 +85,7 @@ def mark(name: str, *, project: str = "DEFAULT"):
                 tracer.add(Mark(**mark_kwargs))
                 raise exc
             mark_kwargs["returns"] = returns
-            tracer.add(Mark(**mark_kwargs))
+            tracer.add(Mark.model_validate(**mark_kwargs))
             return returns
 
         return wrapper
