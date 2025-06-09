@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Self
 
 from pydantic import BaseModel, model_validator
 
@@ -18,13 +19,14 @@ class Target(BaseModel):
     error: type[Exception] | None = None
 
     @model_validator(mode="after")
-    def check_returns_and_error(self):
+    def check_returns_and_error(self) -> Self:
         """Ensure wonky initialization is caught."""
         if self.returns and self.error:
             raise ValueError(
                 f"A {self.__class__.__name__} object cannot have both returns and an "
                 "error."
             )
+        return self
 
     @property
     def key(self) -> str:

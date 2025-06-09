@@ -14,7 +14,7 @@ __all__ = ["PyHunters"]
 class PyHunters(metaclass=Singleton):
     """Class for adding and managing marks."""
 
-    name: str
+    project: str
 
     def __post_init__(self):
         """Ensure that the exit handler is registered."""
@@ -42,8 +42,8 @@ class PyHunters(metaclass=Singleton):
 
     @property
     def _map(self):
-        """Get a dictionary mapping mark names to marks."""
-        return {mark.name: mark for mark in self._targets}
+        """Get a dictionary mapping target names to targets."""
+        return {target.name: target for target in self._targets}
 
     def add(self, target: Target) -> Self:
         """Add a target to the collection."""
@@ -56,40 +56,37 @@ class PyHunters(metaclass=Singleton):
         """Summarize all traces."""
         pass
 
+    def mark(self, name: str):
+        """Simple interface for adding a marker."""
+        caller = inspect.stack()[1]
+        module_path = Path(caller.filename)
+        line_no = caller.lineno + 1
+        mark_kwargs = {"name": name, "module_path": module_path, "line_no": line_no}
 
-def getPyHunters(name: str = __name__) -> PyHunters:
+        def inner(func):
+            method_name = func.__name__
+            mark_kwargs["method_name"] = method_name
+
+            def wrapper(*args, **kwargs):
+                """Inner actions within the method."""
+                mark_kwargs["args"] = args
+                mark_kwargs["kwargs"] = kwargs
+                try:
+                    returns = func(*args, **kwargs)
+                except Exception as exc:
+                    mark_kwargs["error"] = exc
+                    self.add(Target(**mark_kwargs))
+                    raise exc
+                mark_kwargs["returns"] = returns
+                target = Target.model_validate(mark_kwargs)
+                self.add(target)
+                return returns
+
+            return wrapper
+
+        return inner
+
+
+def getPyHunters(project: str = __name__) -> PyHunters:
     """Create or get the singleton `PyHunters` instance."""
-    return PyHunters(name=name)
-
-
-def mark(name: str, *, project: str = "DEFAULT"):
-    """Simple interface for adding a marker."""
-    tracer = PyHunters(project)
-    caller = inspect.stack()[1]
-    module_path = Path(caller.filename)
-    line_no = caller.lineno + 1
-    mark_kwargs = {"name": name, "module_path": module_path, "line_no": line_no}
-
-    def inner(func):
-        method_name = func.__name__
-        mark_kwargs["method_name"] = method_name
-        mark_kwargs["name"] = name
-
-        def wrapper(*args, **kwargs):
-            """Inner actions within the method."""
-            mark_kwargs["args"] = args
-            mark_kwargs["kwargs"] = kwargs
-            try:
-                global returns
-                returns = func(*args, **kwargs)
-            except Exception as exc:
-                mark_kwargs["error"] = exc
-                tracer.add(Target(**mark_kwargs))
-                raise exc
-            mark_kwargs["returns"] = returns
-            tracer.add(Target.model_validate(**mark_kwargs))
-            return returns
-
-        return wrapper
-
-    return inner
+    return PyHunters(project=project)
