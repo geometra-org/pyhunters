@@ -1,11 +1,6 @@
 Any PR title can be optionally prefixed with `breaking|` and must include one of `{ feat | fix | refactor  | tests | chore }` followed by a `colon` and `brief description`.
 
-Examples:
-* refactor: I am rearranging methods and modules
-* fix: I found a bug and resolved it
-* breaking|feat: I've got big changes and there is no going back
-
-# ---My PR---
+# ---My PR Title---
 
 Include a brief and descriptive header for your pull request.
 
@@ -30,6 +25,10 @@ Examples:
 ## Details
 
 Use this space to provide more details about your changes. Consider providing the context around your solution as well as any potential trade-offs or limitations. Ensure that your changes align with the overall architecture and maintainability of the system. Additionally, describe how your changes impact the system's performance and scalability.
+
+### Small Changes
+
+* describe any small changes that do not need any detail
 
 ## Unit/Integration/Manual Testing
 
