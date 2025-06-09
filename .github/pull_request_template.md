@@ -1,8 +1,8 @@
 # ---My PR Title---
 
-## Summary
-
 Any PR title can be optionally prefixed with `breaking|` and must include one of `{ feat | fix | refactor  | tests | chore }` followed by a `colon` and `brief description`.
+
+## Summary
 
 Examples:
 * refactor: I am rearranging methods and modules
