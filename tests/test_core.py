@@ -1,4 +1,4 @@
-from tracer import core as module
+from pyhunters import core as module
 
 
 def test_mark():

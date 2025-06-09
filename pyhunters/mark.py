@@ -3,7 +3,7 @@ from pathlib import Path
 from pydantic import BaseModel, model_validator
 
 
-class Mark(BaseModel):
+class Target(BaseModel):
     """A trackable, traceable object for comparison over time in storage."""
 
     name: str
@@ -21,7 +21,10 @@ class Mark(BaseModel):
     def check_returns_and_error(self):
         """Ensure wonky initialization is caught."""
         if self.returns and self.error:
-            raise ValueError("A `Mark` object cannot have both returns and an error.")
+            raise ValueError(
+                f"A {self.__class__.__name__} object cannot have both returns and an "
+                "error."
+            )
 
     @property
     def key(self) -> str:
