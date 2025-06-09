@@ -1,16 +1,13 @@
-# Copyright 2014 Pants project contributors (see CONTRIBUTORS.md).
-# Licensed under the Apache License, Version 2.0 (see LICENSE).
-
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 from typing import ClassVar
 
-from pants.util.meta import SingletonMetaclass
+from pyhunters.type_mods.singleton import Singleton
 
 
 @dataclass
-class BuildRoot(metaclass=SingletonMetaclass):
+class BuildRoot(metaclass=Singleton):
     """Represents the global workspace build root."""
 
     root_files: ClassVar[list[str]] = ["trace.toml", "pyproject.toml"]

@@ -3,16 +3,16 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["hunter"]
+packages = ["pyhunters"]
 
 [project]
-name = "hunter"
-version = "1.0.0"
+name = "pyhunters"
+version = "1.0.1"
 authors = [
     { name = "Stefan Dalecki", email = "daleckidev@gmail.com" },
     { name = "Dan Kilcullen", email = "devcullen@proton.me" },
 ]
-description = "a hunter marks its targets"
+description = "a (py)hunter marks its targets"
 readme = "README.md"
 requires-python = ">=3.11"
 classifiers = [
