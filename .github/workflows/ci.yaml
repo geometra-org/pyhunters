@@ -8,7 +8,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      # initial configuration
+      # initial setup
       - name: checkout repo
         uses: actions/checkout@v4
       - name: setup python
@@ -41,10 +41,11 @@ jobs:
         python-version: ["3.11", "3.12", "3.13"]
     runs-on: ubuntu-latest
     steps:
-      # initial configuration
+      # initial setup
       - name: checkout repo
         uses: actions/checkout@v4
       - name: setup python
+        id: setup-python
         uses: ./.github/actions/setup-python
         with:
           python-version: ${{ matrix.python-version }} # use python version from matrix
