@@ -10,9 +10,9 @@ Please proivde a 1-2 sentence summary of your changes and link your relevant Jir
 
 Examples:
 * yum!:
-  * Adds a new "timestamp" field to the "trace" object schema, allowing easier filtering and sorting of traces
+  * Adds a new "timestamp" field to the "targets" object schema, allowing easier filtering and sorting of targets
 * yuck!:
-  * Changes the 'trace' object schema
+  * Changes the 'target' object schema
 
 ## Included Change(s)
 - [ ] new feature (non-breaking, added functionality)

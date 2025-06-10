@@ -1,2 +1,2 @@
-# Trace Engineers
-* @geometra-org/trace-devs
+# PyHunters Engineers
+* @geometra-org/pyhunters-devs

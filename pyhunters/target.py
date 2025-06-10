@@ -5,7 +5,7 @@ from pydantic import BaseModel, model_validator
 
 
 class Target(BaseModel):
-    """A trackable, traceable object for comparison over time in storage."""
+    """A targetable, trackable object for comparison over time in storage."""
 
     name: str
     # `project` will likely be a partition key
