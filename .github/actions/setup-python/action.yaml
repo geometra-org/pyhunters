@@ -1,5 +1,5 @@
-name: "Configure Python"
-description: "Configure Python environment for use with UV"
+name: "Setup Python"
+description: "Setup Python environment for use with UV"
 inputs:
   python-version:
     description: "Python version to use"
