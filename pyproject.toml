@@ -5,6 +5,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["pyhunters"]
 
+[tool.hatch.version]
+path = "cz.toml"
+
 [project]
 name = "pyhunters"
 version = "1.0.1"

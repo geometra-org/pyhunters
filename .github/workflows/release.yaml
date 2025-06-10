@@ -1,0 +1,51 @@
+name: Release Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "tag to release"
+        required: false
+        default: null
+
+jobs:
+  # note that we are only bumping the version, not creating a release
+  # future changes will also publish to an artifact repository
+  release_version:
+    environment: Release
+    permissions:
+      contents: write
+      id-token: write
+      actions: write
+      checks: write
+    runs-on: ubuntu-latest
+    name: "Bump version and create changelog with commitizen"
+    steps:
+      # initial setup
+      - name: checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: setup python
+        id: setup-python
+        uses: ./.github/actions/setup-python
+        with:
+          uv-cache: "false"
+
+      # if a tag was specified, check it out
+      - id: checkout-manual-release
+        if: ${{ inputs.tag }}
+        name: Manually release from tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+
+      - id: cz
+        name: Create bump and changelog
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          manual_version: ${{ inputs.tag }} # ignored if tag was not supplied
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Print Version
+        run: echo "Bumped to version ${{ steps.cz.outputs.version }}"

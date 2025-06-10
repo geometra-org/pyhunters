@@ -1,4 +1,4 @@
-Any PR title can be optionally prefixed with `breaking|` and must include one of `{ feat | fix | refactor  | tests | chore }` followed by a `colon` and `brief description`.
+Any PR title can be optionally prefixed with `breaking|` and must include one of `{ feat | fix | refactor | tests | chore }` followed by a `colon` and `brief description`.
 
 # ---My PR Title---
 
