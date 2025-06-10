@@ -2,7 +2,15 @@ name: CI
 on:
   pull_request:
     branches: [main]
-    types: [edited, opened, ready_for_review, reopened, review_requested]
+    types:
+      [
+        edited,
+        opened,
+        ready_for_review,
+        reopened,
+        review_requested,
+        synchronize,
+      ]
 
 jobs:
   validate:
