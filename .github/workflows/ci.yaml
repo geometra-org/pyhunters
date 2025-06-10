@@ -1,0 +1,63 @@
+name: CI
+on:
+  pull_request:
+    branches: [main]
+    types:
+      [
+        edited,
+        opened,
+        ready_for_review,
+        reopened,
+        review_requested,
+        synchronize,
+      ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      # initial setup
+      - name: checkout repo
+        uses: actions/checkout@v4
+      - name: setup python
+        id: setup-python
+        uses: ./.github/actions/setup-python
+
+      # scan uv.lock with trivy
+      - name: trivy
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          scan-type: "fs"
+          scan-ref: "uv.lock"
+          severity: "CRITICAL,HIGH"
+          exit-code: "1"
+
+      # identify changed files
+      - name: get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v46
+
+      # run pre-commit against changed files
+      - name: pre-commit
+        id: pre-commit
+        run: uv run pre-commit run --show-diff-on-failure --color=always --files ${{ steps.changed-files.outputs.all_changed_files }}
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    runs-on: ubuntu-latest
+    steps:
+      # initial setup
+      - name: checkout repo
+        uses: actions/checkout@v4
+      - name: setup python
+        id: setup-python
+        uses: ./.github/actions/setup-python
+        with:
+          python-version: ${{ matrix.python-version }} # use python version from matrix
+
+      # run tests using python version from matrix
+      - name: run tests
+        run: uv run pytest tests/

@@ -53,7 +53,7 @@ class PyHunters(metaclass=Singleton):
         return self
 
     def summarize(self):
-        """Summarize all traces."""
+        """Summarize all targets."""
         pass
 
     def mark(self, name: str):

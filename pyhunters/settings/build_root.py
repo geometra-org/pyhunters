@@ -10,7 +10,7 @@ from pyhunters.type_mods.singleton import Singleton
 class BuildRoot(metaclass=Singleton):
     """Represents the global workspace build root."""
 
-    root_files: ClassVar[list[str]] = ["trace.toml", "pyproject.toml"]
+    root_files: ClassVar[list[str]] = ["pyhunters.toml", "pyproject.toml"]
 
     class NotFoundError(Exception):
         """Raised when unable to find the current workspace build root."""
@@ -24,8 +24,8 @@ class BuildRoot(metaclass=Singleton):
                 root = root.parent
             else:
                 raise self.NotFoundError(
-                    "No build root detected. `trace` detects the build root by looking "
-                    "for at least one file "
-                    f"from {self.root_files} in the cwd and its ancestors."
+                    "No build root detected. `pyhunters` detects the build root by "
+                    f"looking for at least one file from {self.root_files} in the cwd "
+                    "and its ancestors."
                 )
         return root

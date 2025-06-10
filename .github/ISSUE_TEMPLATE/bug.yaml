@@ -2,7 +2,7 @@ name: Bug Report
 description: File a bug report.
 title: "[Bug]: "
 labels: ["bug", "triage"]
-projects: ["trace"]
+projects: ["pyhunters"]
 body:
   - type: markdown
     attributes:
@@ -37,7 +37,7 @@ body:
   - type: textarea
     id: library-version
     attributes:
-      label: What version of 'trace' were you using?
+      label: What version of 'pyhunters' were you using?
       description: Please specify which version/tag you were using.
       placeholder: x.y.z
     validations:
