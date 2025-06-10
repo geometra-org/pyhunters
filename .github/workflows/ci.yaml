@@ -49,9 +49,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }} # use python version from matrix
 
-      - name: install dependencies
-        run: uv run pip install -r requirements.txt
-
       # run tests using python version from matrix
       - name: run tests
         run: uv run pytest tests/
