@@ -11,9 +11,9 @@ jobs:
       # initial configuration
       - name: checkout repo
         uses: actions/checkout@v4
-      - name: configure python
-        id: configure-python
-        uses: ./.github/actions/configure-python
+      - name: setup python
+        id: setup-python
+        uses: ./.github/actions/setup-python
 
       # scan uv.lock with trivy
       - name: trivy
@@ -44,7 +44,7 @@ jobs:
       # initial configuration
       - name: checkout repo
         uses: actions/checkout@v4
-      - name: configure python
+      - name: setup python
         uses: ./.github/actions/setup-python
         with:
           python-version: ${{ matrix.python-version }} # use python version from matrix
