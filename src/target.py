@@ -3,6 +3,8 @@ from typing import Self
 
 from pydantic import BaseModel, model_validator
 
+__all__ = ["Target"]
+
 
 class Target(BaseModel):
     """A targetable, trackable object for comparison over time in storage."""
@@ -13,10 +15,10 @@ class Target(BaseModel):
     module_path: Path
     method_name: str
     line_no: int
-    args: tuple
-    kwargs: dict
+    args: tuple[object, ...]
+    kwargs: dict[str, object]
     returns: object | None = None
-    error: type[Exception] | None = None
+    error: str | None = None
 
     @model_validator(mode="after")
     def check_returns_and_error(self) -> Self:

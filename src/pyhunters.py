@@ -4,10 +4,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Self
 
-from pyhunters.target import Target
-from pyhunters.type_mods.singleton import Singleton
+from src.target import Target
+from src.type_mods.singleton import Singleton
 
-__all__ = ["PyHunters"]
+__all__ = ["PyHunters", "getPyHunters"]
 
 
 @dataclass
@@ -74,7 +74,7 @@ class PyHunters(metaclass=Singleton):
                 try:
                     returns = func(*args, **kwargs)
                 except Exception as exc:
-                    mark_kwargs["error"] = exc
+                    mark_kwargs["error"] = exc.__repr__()
                     self.add(Target(**mark_kwargs))
                     raise exc
                 mark_kwargs["returns"] = returns

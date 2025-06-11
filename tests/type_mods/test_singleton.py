@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from pyhunters.type_mods import singleton as module
+from src.type_mods import singleton as module
 
 
 @dataclass
