@@ -3,7 +3,7 @@ from functools import cached_property
 from pathlib import Path
 from typing import ClassVar
 
-from pyhunters.type_mods.singleton import Singleton
+from src.type_mods.singleton import Singleton
 
 
 @dataclass
