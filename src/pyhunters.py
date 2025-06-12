@@ -74,7 +74,7 @@ class PyHunters(metaclass=Singleton):
                 try:
                     returns = func(*args, **kwargs)
                 except Exception as exc:
-                    mark_kwargs["error"] = exc.__repr__()
+                    mark_kwargs["error"] = exc
                     self.add(Target(**mark_kwargs))
                     raise exc
                 mark_kwargs["returns"] = returns

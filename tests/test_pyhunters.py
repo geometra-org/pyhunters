@@ -139,6 +139,6 @@ def test_mark_no_args_w_raise():
             args=(),
             kwargs={},
             returns=None,
-            error="ValueError()",
+            error=ValueError(),
         )
         assert actual_result == expected_result

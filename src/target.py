@@ -1,9 +1,46 @@
+from collections.abc import Callable
 from pathlib import Path
-from typing import Self
+from typing import Any, Self
 
-from pydantic import BaseModel, model_validator
+from pydantic import (
+    BaseModel,
+    model_validator,
+)
+from pydantic_core import core_schema
 
 __all__ = ["Target"]
+
+
+class Error:
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls,
+        _source_type: Any,
+        _handler: Callable[[Any], core_schema.CoreSchema],
+    ) -> core_schema.CoreSchema:
+        """Generates pydantic schema based on `Version` type in `semver`."""
+
+        def make_str(value: Exception) -> str:
+            """Convert an exception to a string representation.
+
+            ValueError("this") -> "ValueError('this')"
+            """
+            return value.__repr__()
+
+        def validate_from_str(value: str) -> Exception:
+            """Evaluate a string as an exception.
+
+            "ValueError('this')" -> ValueError("this")
+            """
+            return eval(value)  # noqa: S307
+
+        return core_schema.json_or_python_schema(
+            json_schema=core_schema.no_info_plain_validator_function(validate_from_str),
+            python_schema=core_schema.is_instance_schema(
+                Exception
+            ),  # verify is Exception
+            serialization=core_schema.plain_serializer_function_ser_schema(make_str),
+        )
 
 
 class Target(BaseModel):
@@ -18,7 +55,7 @@ class Target(BaseModel):
     args: tuple[object, ...]
     kwargs: dict[str, object]
     returns: object | None = None
-    error: str | None = None
+    error: Error | None = None
 
     @model_validator(mode="after")
     def check_returns_and_error(self) -> Self:
@@ -29,6 +66,30 @@ class Target(BaseModel):
                 "error."
             )
         return self
+
+    def __eq__(self, other: object) -> bool:
+        """Compare two Target objects for equality."""
+        if not isinstance(other, type(self)):
+            return False
+
+        if self.error is None != other.error is None:
+            return False
+
+        return (
+            self.project == other.project
+            and self.name == other.name
+            and self.module_path == other.module_path
+            and self.method_name == other.method_name
+            and self.line_no == other.line_no
+            and self.args == other.args
+            and self.kwargs == other.kwargs
+            and self.returns == other.returns
+            and type(self.error) is type(other.error)
+            if self.error is not None
+            else True and self.error.args == other.error.args
+            if self.error is not None
+            else True
+        )
 
     @property
     def key(self) -> str:
