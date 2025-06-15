@@ -4,37 +4,45 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Self
 
+from src.settings.build_root import PyHuntersConfig
 from src.target import Target
 from src.type_mods.singleton import Singleton
 
 __all__ = ["PyHunters", "getPyHunters"]
+
+config = PyHuntersConfig.initialize()
 
 
 @dataclass
 class PyHunters(metaclass=Singleton):
     """Class for adding and managing marks."""
 
-    project: str
+    team: str | None = None
+    project: str | None = None
 
     def __post_init__(self):
         """Ensure that the exit handler is registered."""
-        self._targets: list[Target] = []
+        if not self.team:
+            self.team = config.team
+        if not self.project:
+            self.project = config.project
+        self.targets: list[Target] = []
         self._register_exit()
 
     def __iter__(self):
         """Iterate through all the marks."""
-        return iter(self._targets)
+        return iter(self.targets)
 
     def __getitem__(self, key: str) -> Target:
-        """Get a mark by name."""
+        """Get a `Target` by name."""
         return self._map[key]
 
-    def get(self, name: str) -> Target | None:
-        """Get a mark by name, or None if not found."""
+    def get(self, name: str, *, default: Target | None = None) -> Target | None:
+        """Get a `Target` by name, or None if not found."""
         try:
             return self._map[name]
         except KeyError:
-            return None
+            return default
 
     def _register_exit(self):
         """Register the exit handler to summarize all targets."""
@@ -43,13 +51,13 @@ class PyHunters(metaclass=Singleton):
     @property
     def _map(self):
         """Get a dictionary mapping target names to targets."""
-        return {target.name: target for target in self._targets}
+        return {target.name: target for target in self.targets}
 
     def add(self, target: Target) -> Self:
         """Add a target to the collection."""
         if not isinstance(target, Target):
             raise TypeError(f"Expected Target, got {type(target)}.")
-        self._targets += [target]
+        self.targets += [target]
         return self
 
     def summarize(self):
@@ -87,6 +95,10 @@ class PyHunters(metaclass=Singleton):
         return inner
 
 
-def getPyHunters(project: str = __name__) -> PyHunters:
+def getPyHunters(*, team: str | None = None, project: str | None = None) -> PyHunters:
     """Create or get the singleton `PyHunters` instance."""
+    if not team:
+        team = config.team
+    if not project:
+        project = config.project
     return PyHunters(project=project)

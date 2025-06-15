@@ -8,7 +8,11 @@ from pydantic import (
 )
 from pydantic_core import core_schema
 
+from src.settings.build_root import PyHuntersConfig
+
 __all__ = ["Target"]
+
+config = PyHuntersConfig.initialize()
 
 
 class Error:
@@ -47,8 +51,7 @@ class Target(BaseModel):
     """A targetable, trackable object for comparison over time in storage."""
 
     name: str
-    # `project` will likely be a partition key
-    project: str = "DEFAULT"  # eventually replace with something from pyproject.toml
+    project: str = config.project
     module_path: Path
     method_name: str
     line_no: int
@@ -68,7 +71,7 @@ class Target(BaseModel):
         return self
 
     def __eq__(self, other: object) -> bool:
-        """Compare two Target objects for equality."""
+        """Compare two `Target` objects for equality."""
         if not isinstance(other, type(self)):
             return False
 
@@ -93,17 +96,17 @@ class Target(BaseModel):
 
     @property
     def key(self) -> str:
-        """Hashable of the markable object."""
+        """Hashable of the `Target`-able object."""
         return (
             f"{self.project}.{self.name}:"
             f"{self.module_path}.{self.method_name}.{self.line_no}"
         )
 
     def __hash__(self) -> int:
-        """One (unique) mark to rule them all."""
+        """One (unique) `Target` to rule them all."""
         return hash(self.key)
 
     @property
     def error_raised(self) -> bool:
-        """Whether the mark caught an error."""
+        """Whether the `Target` caught an error."""
         return bool(self.error)
